@@ -1,0 +1,23 @@
+function enviarEmailsComCertificados() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const lastRow = sheet.getLastRow();
+
+  for (let i = 2; i <= lastRow; i++) {  // começa na linha 2 (assumindo que a linha 1 é o cabeçalho)
+    const nome = sheet.getRange(i, 1).getValue();
+    const email = sheet.getRange(i, 2).getValue();
+    const linkCertificado = sheet.getRange(i, 3).getValue();
+
+    // Envia o e-mail com o certificado
+    MailApp.sendEmail({
+      to: email,
+      subject: "O CORPO FALA LIVRO GRATIS DOWNLOAD",
+      htmlBody: `<p>Olá, ${nome}!</p><p>Olá abaixo segue como solicitado o livro o corpo fala em pdf . Qualquer duvida estou a disposição! . .</p>`,
+      attachments: [DriveApp.getFileById(getFileIdFromUrl(linkCertificado)).getAs(MimeType.PDF)]
+    });
+  }
+}
+
+function getFileIdFromUrl(url) {
+  const idMatch = url.match(/[-\w]{25,}/);
+  return idMatch ? idMatch[0] : null;
+}
